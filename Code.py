@@ -113,7 +113,7 @@ class Karyawan(Pelanggan):
         self.noKtp = noKtp
 
     def showinfo(self):
-        print("Nama\t\t: {}\nNomer KTP\t\t: {}\nAlamat\t\t: {}\nNomer HP\t: {}".format(self.nama, self.noKTP, self.alamat, self.noHP))
+        print("Nama\t\t: {}\nNomer KTP\t: {}\nAlamat\t\t: {}\nNomer HP\t: {}".format(self.nama, self.noKtp, self.alamat, self.noHP))
 
 class SaldoPelanggan:
     def __init__(self, jumlahSaldo):
@@ -237,6 +237,16 @@ class Menu:
             2. Lihat Profil
             3. Lihat riwayat transaksi """)
             pilih = input("pilih fitur yang ingin dipilih")
+            if pilih == "1":
+                conn = sqlite3.connect('project.sqlite')
+                cursor = conn.cursor()
+                hasil = cursor.execute("select * from Pelanggan").fetchall()
+                conn.close()
+                print(f"{'NO':<3}{'NAMA':<10}{'Alamat':<15}{'No Telpn':<10}")
+                for baris in hasil:
+                    print(f"{baris[0]:<3}{baris[1]:<10}{baris[2]:<15}{baris[3]:<10}")
+            elif pilih == "2":
+                karyawan.showinfo()
 
                 
         
