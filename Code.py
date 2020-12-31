@@ -249,7 +249,7 @@ class Menu:
             silahkan pilih fitur :
             1. Lihat Pelanggan
             2. Lihat Profil
-            3. Lihat riwayat transaksi """)
+            """)
             pilih = input("pilih fitur yang ingin dipilih")
             if pilih == "1":
                 conn = sqlite3.connect('project.sqlite')
