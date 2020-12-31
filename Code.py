@@ -2,17 +2,18 @@ import sqlite3
 
 class Pelanggan:
     jumlahPelanggan = 0
-    def __init__(self, nomerID, nama, alamat, noHP):
+    def __init__(self, nomerID, nama, alamat, noHP, tahunLahir):
         # private variabel
         self.__nama = nama
         self.__alamat = alamat
         self.__noHP = noHP
+        self.tahunLahir = tahunLahir
         Pelanggan.jumlahPelanggan += 1
-        self.__nomer_id = "P" + str(nomerID)
+        self.__nomer_id = self.nomerID()
 
     def status(self):
-        nomer_id = self.__nomer_id
-        if nomer_id[0] == "P":
+        nomerId = self.__nomer_id
+        if nomerId[0] == "P":
             status = "Pelanggan"
         else:
             status = "Karyawan"
@@ -20,6 +21,9 @@ class Pelanggan:
 
     def showinfo(self):
         print("Nama\t\t: {}\nAlamat\t\t: {}\nNomer HP\t: {}".format(self.nama, self.alamat, self.noHP))
+
+    def umur(self):
+        pass
     
     # membuat method untuk menentukan no id pelanggan yang mendaftar
     def nomerID(self):
@@ -108,12 +112,16 @@ class Saldo(Pelanggan):
         self.saldo = inputsaldo
 
 class Karyawan(Pelanggan):
-    def __init__(self, noID, nama, alamat, noHP, noKtp):
+    def __init__(self, noID, nama, alamat, noHP, noKtp, tahunLahir):
         super().__init__(noID, nama, alamat, noHP)
         self.noKtp = noKtp
 
     def showinfo(self):
         print("Nama\t\t: {}\nNomer KTP\t: {}\nAlamat\t\t: {}\nNomer HP\t: {}".format(self.nama, self.noKtp, self.alamat, self.noHP))
+
+    def umur(self):
+        usiaSaatIni = 2020 - self.tahunLahir
+        return usiaSaatIni
 
 class SaldoPelanggan:
     def __init__(self, jumlahSaldo):
@@ -135,13 +143,11 @@ class SaldoPelanggan:
             self.jumlahSaldo = jumlahSaldoTarik
         # return self.jumlahSaldo
 
-    def saldoPinjam(self, uangPinjam):
+    def utang(self, uangPinjam):
         uangPinjam = int(input("Masukan jumlah uang yang ingin Anda pinjam"))
         bunga = self.bunga() * uangPinjam
-        self.saldoKembali(bunga, uangPinjam)
-        jumlahSaldoPinjam = self.jumlahSaldo + uangPinjam
-        self.jumlahSaldo = jumlahSaldoPinjam
-        return self.jumlahSaldo
+        piutang = uangPinjam + bunga
+        return piutang
 
     def bunga(self):
         hari = int(input("masukan total hari terhitung hari ini dan hari dimana Anda mengembalikan"))
@@ -149,12 +155,12 @@ class SaldoPelanggan:
         bungaPinjam = bulan // 12 * 5 / 100
         return bungaPinjam
 
-    def saldoKembali(self, totalBunga, uangPinjam):
-        jumlahKembali = totalBunga + uangPinjam
-        if self.jumlahSaldo < jumlahKembali:
+    def saldoKembali(self):
+        piutang = self.utang()
+        if self.jumlahSaldo < piutang:
             print("maaf saldo Anda kurang untuk membayar utang")
         else:
-            jumlahSaldoKembali = self.jumlahSaldo - jumlahKembali 
+            jumlahSaldo = self.jumlahSaldo - piutang 
             self.jumlahSaldo = jumlahSaldoKembali
         return self.jumlahSaldo
 
