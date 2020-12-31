@@ -9,7 +9,7 @@ class Pelanggan:
         self.__noHP = noHP
         self.tahunLahir = tahunLahir
         Pelanggan.jumlahPelanggan += 1
-        self.__nomer_id = self.nomerID()
+        self.__nomer_id = nomerID
 
     def status(self):
         nomerId = self.__nomer_id
@@ -26,9 +26,9 @@ class Pelanggan:
         pass
     
     # membuat method untuk menentukan no id pelanggan yang mendaftar
-    def nomerID(self):
-        nomer_id = "P" + str(Pelanggan.jumlahPelanggan)
-        return nomer_id
+    # def nomerID(self):
+    #     nomer_id = "P" + str(Pelanggan.jumlahPelanggan)
+    #     return nomer_id
 
     @property
     def nomer_id(self):
@@ -96,6 +96,7 @@ class Pelanggan:
         print("deleted number phone")
         self.__noHP = None
 
+
 # fira = Pelanggan("fira", "Banyuwangi", "085231796284")
 # putri = Pelanggan("putri", "Banyuwangi", "085231796284")
 # print(fira.noID)
@@ -103,17 +104,17 @@ class Pelanggan:
 # print(fira.nomer_id)
 # print(putri.nomer_id)
 
-class Saldo(Pelanggan):
-    def __init__(self, nama, alamat, noHP):
-        super().__init__(nama, alamat, noHP)
-        self.saldo = 0
+# class Saldo(Pelanggan):
+#     def __init__(self, nama, alamat, noHP):
+#         super().__init__(nama, alamat, noHP)
+#         self.saldo = 0
 
-    def inputSaldo(self, inputsaldo):
-        self.saldo = inputsaldo
+    # def inputSaldo(self, inputsaldo):
+    #     self.saldo = inputsaldo
 
 class Karyawan(Pelanggan):
     def __init__(self, noID, nama, alamat, noHP, noKtp, tahunLahir):
-        super().__init__(noID, nama, alamat, noHP)
+        super().__init__(noID, nama, alamat, noHP, tahunLahir)
         self.noKtp = noKtp
 
     def showinfo(self):
@@ -124,38 +125,62 @@ class Karyawan(Pelanggan):
         return usiaSaatIni
 
 class SaldoPelanggan:
-    def __init__(self, nama, alamat, noHP):
-        super().__init__(nama, alamat, noHP)
-        self.jumlahSaldo = self.jumlahSaldo()
+    def __init__(self, nomorid, nama, alamat, noHP):
+        self.nomorid = nomorid
+        self.nama = nama
+        self.alamat = alamat
+        self.noHP = noHP
+        self.__jumlahSaldo = self.jumlahSaldo()
+        self.jumlahHutang = self.apdetHutang()
+
+    def jumlahSaldo(self):
+        conn = sqlite3.connect('project.sqlite')
+        cursor = conn.cursor()
+        hasil = cursor.execute("select jumlahUang from SaldoPelanggan where noID = ?", (str(self.nomorid),)).fetchone()[0]
+        conn.close()
+        return hasil
+
+    
+
+
+    def showSaldo(self):
+        print(self.__jumlahSaldo)
+    
 
     def inputSaldo(self, inputsaldo):
         self.saldo = inputsaldo
 
+
     # def __init__(self, jumlahSaldo):
-    #     self.jumlahSaldo = jumlahSaldo
+    #     self.__jumlahSaldo = jumlahSaldo
     #     self.saldoHutang = 0
 
     # waktu transaksi pada masing-masing method untuk mengetahui kapan transaksi saat itu dilakukan, pakai datetime database auto sabi
-    def saldoTabungan(self, waktuTransaksi):
+    def saldoTabungan(self):
         uangMasuk = int(input("Masukan jumlah uang yang ingin Anda tabung: "))
-        jumlahSaldoTabungan = self.jumlahSaldo + uangMasuk
-        self.jumlahSaldo = jumlahSaldoTabungan
-        return self.jumlahSaldo
+        jumlahSaldoTabungan = self.__jumlahSaldo + uangMasuk
+        self.__jumlahSaldo = jumlahSaldoTabungan
+        conn = sqlite3.connect('project.sqlite')
+        cursor = conn.cursor()
+        cursor.execute("update SaldoPelanggan set jumlahUang = ? where noID = ? ", (jumlahSaldoTabungan, self.nomorid,))
+        conn.commit()
+        conn.close()
+        # return self.__jumlahSaldo
 
     def saldoTarik(self, waktuTransaksi):
         uangTarik = int(input("masukan jumlah uang yang ingin Anda ambil"))
-        if self.jumlahSaldo < uangTarik:
+        if self.__jumlahSaldo < uangTarik:
             print("Maaf saldo anda tidak mencukupi")
         else:
-            jumlahSaldoTarik = self.jumlahSaldo - uangTarik
-            self.jumlahSaldo = jumlahSaldoTarik
-        return self.jumlahSaldo
+            jumlahSaldoTarik = self.__jumlahSaldo - uangTarik
+            self.__jumlahSaldo = jumlahSaldoTarik
+        return self.__jumlahSaldo
 
-    def utang(self, uangPinjam, waktuTransaksi):
+    def utang(self, waktuTransaksi):
         uangPinjam = int(input("Masukan jumlah uang yang ingin Anda pinjam"))
         bunga = self.bunga() * uangPinjam
         piutang = uangPinjam + bunga
-        return piutang
+        self.jumlahHutang = piutang
 
     def bunga(self):
         hari = int(input("masukan total hari terhitung hari ini dan hari dimana Anda mengembalikan"))
@@ -163,14 +188,26 @@ class SaldoPelanggan:
         bungaPinjam = bulan // 12 * 5 / 100
         return bungaPinjam
 
-    def saldoKembali(self, waktuTransaksi):
-        piutang = self.utang()
-        if self.jumlahSaldo < piutang:
+    def bayarHutang(self):
+        piutang = self.jumlahHutang
+        if self.__jumlahSaldo < piutang:
             print("maaf saldo Anda kurang untuk membayar utang")
         else:
-            jumlahSaldo = self.jumlahSaldo - piutang 
-            self.jumlahSaldo = jumlahSaldoKembali
-        return self.jumlahSaldo
+            jumlahSaldo = self.__jumlahSaldo - piutang 
+            self.__jumlahSaldo = jumlahSaldo
+            conn = sqlite3.connect('project.sqlite')
+            cursor = conn.cursor()
+            cursor.execute("update SaldoPelanggan set jumlahHutang = 0 ,jumlahUang = ? where noID = ? ", (self.__jumlahSaldo, self.nomorid,))
+            conn.commit()
+            conn.close()
+        # return self.__jumlahSaldo
+
+    def apdetHutang(self):
+        conn = sqlite3.connect('project.sqlite')
+        cursor = conn.cursor()
+        hasil = cursor.execute("select jumlahHutang from SaldoPelanggan where noID = ?", (str(self.nomorid),)).fetchone()[0]
+        conn.close()
+        return hasil
 
 class Menu:
     def menuUtama(self):
@@ -201,7 +238,7 @@ class Menu:
                 print(hasil)
                 if len(hasil) > 0:
                     if nama == hasil[1]:
-                        pelanggan = Pelanggan(hasil[0],hasil[1], hasil[2], hasil[3])
+                        pelanggan = Pelanggan(hasil[0],hasil[1], hasil[2], hasil[3], hasil[4])
                         self.menuPelanggan(pelanggan)
                 else:
                     print("maaf nama tidak ditemukan")
@@ -214,7 +251,7 @@ class Menu:
                 print(hasil)
                 if len(hasil) > 0:
                     if nama == hasil[1]:
-                        karyawan = Karyawan(hasil[0],hasil[1], hasil[2], hasil[3], hasil[4])
+                        karyawan = Karyawan(hasil[0],hasil[1], hasil[2], hasil[3], hasil[4], hasil[5])
                         self.menuKaryawan(karyawan)
                 else:
                     print("maaf nama tidak ditemukan")
@@ -226,11 +263,12 @@ class Menu:
 
     def menuPelanggan(self, pelanggan):
         while True:
+            saldo = SaldoPelanggan(pelanggan.nomer_id, pelanggan.nama, pelanggan.alamat, pelanggan.noHP)
             print("""Selamat Datang di anu
             Silahkan pilih fitur :
             1. Lihat profil
             2. Tambah tabungan
-            3. Bayar tagihan
+            3. Bayar Hutang
             4. Pinjam
             5. Tarik uang
             6. Lihat saldo
@@ -239,7 +277,17 @@ class Menu:
             if pilih == "1":
                 pelanggan.showinfo()
             elif pilih == "2":
-                pass
+                saldo.saldoTabungan()
+            elif pilih == "3":
+                saldo.bayarHutang()
+            elif pilih == "4":
+                pelanggan.bayarHutang()
+            elif pilih == "5":
+                pelanggan.saldoTarik()
+            elif pilih == "6":
+                pelanggan.showSaldo()
+
+
 
 
 
