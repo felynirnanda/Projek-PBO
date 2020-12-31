@@ -124,26 +124,34 @@ class Karyawan(Pelanggan):
         return usiaSaatIni
 
 class SaldoPelanggan:
-    def __init__(self, jumlahSaldo):
-        self.jumlahSaldo = jumlahSaldo
-        self.saldoHutang = 0
+    def __init__(self, nama, alamat, noHP):
+        super().__init__(nama, alamat, noHP)
+        self.jumlahSaldo = self.jumlahSaldo()
 
-    def saldoTabungan(self):
+    def inputSaldo(self, inputsaldo):
+        self.saldo = inputsaldo
+
+    # def __init__(self, jumlahSaldo):
+    #     self.jumlahSaldo = jumlahSaldo
+    #     self.saldoHutang = 0
+
+    # waktu transaksi pada masing-masing method untuk mengetahui kapan transaksi saat itu dilakukan, pakai datetime database auto sabi
+    def saldoTabungan(self, waktuTransaksi):
         uangMasuk = int(input("Masukan jumlah uang yang ingin Anda tabung: "))
         jumlahSaldoTabungan = self.jumlahSaldo + uangMasuk
         self.jumlahSaldo = jumlahSaldoTabungan
-        # return self.jumlahSaldo
+        return self.jumlahSaldo
 
-    def saldoTarik(self):
+    def saldoTarik(self, waktuTransaksi):
         uangTarik = int(input("masukan jumlah uang yang ingin Anda ambil"))
         if self.jumlahSaldo < uangTarik:
             print("Maaf saldo anda tidak mencukupi")
         else:
             jumlahSaldoTarik = self.jumlahSaldo - uangTarik
             self.jumlahSaldo = jumlahSaldoTarik
-        # return self.jumlahSaldo
+        return self.jumlahSaldo
 
-    def utang(self, uangPinjam):
+    def utang(self, uangPinjam, waktuTransaksi):
         uangPinjam = int(input("Masukan jumlah uang yang ingin Anda pinjam"))
         bunga = self.bunga() * uangPinjam
         piutang = uangPinjam + bunga
@@ -155,7 +163,7 @@ class SaldoPelanggan:
         bungaPinjam = bulan // 12 * 5 / 100
         return bungaPinjam
 
-    def saldoKembali(self):
+    def saldoKembali(self, waktuTransaksi):
         piutang = self.utang()
         if self.jumlahSaldo < piutang:
             print("maaf saldo Anda kurang untuk membayar utang")
