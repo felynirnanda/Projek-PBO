@@ -11,14 +11,6 @@ class Pelanggan:
         Pelanggan.jumlahPelanggan += 1
         self.__nomer_id = nomerID
 
-    def status(self):
-        nomerId = self.__nomer_id
-        if nomerId[0] == "P":
-            status = "Pelanggan"
-        else:
-            status = "Karyawan"
-        print("Status pengguna ialah ", status)
-
     def showinfo(self):
         print("Nama\t\t: {}\nAlamat\t\t: {}\nNomer HP\t: {}".format(self.nama, self.alamat, self.noHP))
 
@@ -207,7 +199,6 @@ class Menu:
                 nama = input("masukkan nama ")
                 hasil = cursor.execute("select * from Pelanggan where Nama = ?", (nama,)).fetchone()
                 conn.close()
-                print(hasil)
                 if len(hasil) > 0:
                     if nama == hasil[1]:
                         pelanggan = Pelanggan(hasil[0],hasil[1], hasil[2], hasil[3], hasil[4])
@@ -258,6 +249,7 @@ class Menu:
                 saldo.saldoTarik()
             elif pilih == "6":
                 saldo.showSaldo()
+
 
     def menuKaryawan(self, karyawan):
         while True:
