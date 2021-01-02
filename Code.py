@@ -1,6 +1,16 @@
 import sqlite3
+from abc import ABC, abstractmethod
 
-class Pelanggan:
+class Pengguna(ABC):
+    @abstractmethod
+    def showInfo(self):
+        pass
+
+    @abstractmethod
+    def umur(self):
+        pass
+
+class Pelanggan(Pengguna):
     jumlahPelanggan = 0
     def __init__(self, nomerID, nama, alamat, noHP, tahunLahir):
         # private variabel
@@ -15,7 +25,8 @@ class Pelanggan:
         print("Nama\t\t: {}\nAlamat\t\t: {}\nNomer HP\t: {}".format(self.nama, self.alamat, self.noHP))
 
     def umur(self):
-        pass
+        usiaSaatIni = 2020 - self.__tahunLahir
+        return usiaSaatIni
 
     @property
     def nomer_id(self):
@@ -80,18 +91,14 @@ class Karyawan(Pelanggan):
     def showinfo(self):
         print("Nama\t\t: {}\nNomer KTP\t: {}\nAlamat\t\t: {}\nNomer HP\t: {}".format(self.nama, self.noKtp, self.alamat, self.noHP))
 
-    def umur(self):
-        usiaSaatIni = 2020 - self.tahunLahir
-        return usiaSaatIni
-
 class SaldoPelanggan:
     def __init__(self, nomorid, nama, alamat, noHP):
-        self.nomorid = nomorid
-        self.nama = nama
-        self.alamat = alamat
-        self.noHP = noHP
+        self.__nomorid = nomorid
+        self.__nama = nama
+        self.__alamat = alamat
+        self.__noHP = noHP
         self.__jumlahSaldo = self.jumlahSaldo()
-        self.jumlahHutang = self.apdetHutang()
+        self.__jumlahHutang = self.apdetHutang()
 
     def jumlahSaldo(self):
         conn = sqlite3.connect('project.sqlite')
