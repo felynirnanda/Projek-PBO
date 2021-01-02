@@ -252,6 +252,8 @@ class Menu:
                 saldo.saldoTarik()
             elif pilih == "6":
                 saldo.showSaldo()
+            else:
+                break
 
 
     def menuKaryawan(self, karyawan):
