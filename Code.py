@@ -252,7 +252,7 @@ class Menu:
                 saldo.saldoTarik()
             elif pilih == "6":
                 saldo.showSaldo()
-            else:
+            elif pilih == "7":
                 break
 
 
