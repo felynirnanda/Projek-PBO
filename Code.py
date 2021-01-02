@@ -103,7 +103,7 @@ class SaldoPelanggan:
     def jumlahSaldo(self):
         conn = sqlite3.connect('project.sqlite')
         cursor = conn.cursor()
-        hasil = cursor.execute("select jumlahUang from SaldoPelanggan where noID = ?", (str(self.nomorid),)).fetchone()[0]
+        hasil = cursor.execute("select jumlahUang from SaldoPelanggan where noID = ?", (str(self.__nomorid),)).fetchone()[0]
         conn.close()
         return hasil
 
@@ -121,7 +121,7 @@ class SaldoPelanggan:
         self.__jumlahSaldo = jumlahSaldoTabungan
         conn = sqlite3.connect('project.sqlite')
         cursor = conn.cursor()
-        cursor.execute("update SaldoPelanggan set jumlahUang = ? where noID = ? ", (jumlahSaldoTabungan, self.nomorid,))
+        cursor.execute("update SaldoPelanggan set jumlahUang = ? where noID = ? ", (jumlahSaldoTabungan, self.__nomorid,))
         conn.commit()
         conn.close()
 
@@ -134,7 +134,7 @@ class SaldoPelanggan:
             self.__jumlahSaldo = jumlahSaldoTarik
             conn = sqlite3.connect('project.sqlite')
             cursor = conn.cursor()
-            cursor.execute("update SaldoPelanggan set jumlahUang = ? where noID = ? ", (self.__jumlahSaldo, self.nomorid,))
+            cursor.execute("update SaldoPelanggan set jumlahUang = ? where noID = ? ", (self.__jumlahSaldo, self.__nomorid,))
             conn.commit()
             conn.close()
 
@@ -142,12 +142,12 @@ class SaldoPelanggan:
         uangPinjam = int(input("Masukan jumlah uang yang ingin Anda pinjam"))
         bunga = self.bunga(uangPinjam)
         piutang = uangPinjam + bunga
-        self.jumlahHutang += piutang
+        self.__jumlahHutang += piutang
         jumlahSaldo = self.__jumlahSaldo + uangPinjam 
         self.__jumlahSaldo = jumlahSaldo
         conn = sqlite3.connect('project.sqlite')
         cursor = conn.cursor()
-        cursor.execute("update SaldoPelanggan set jumlahHutang = ? ,jumlahUang = ? where noID = ? ", (self.jumlahHutang, self.__jumlahSaldo, self.nomorid,))
+        cursor.execute("update SaldoPelanggan set jumlahHutang = ? ,jumlahUang = ? where noID = ? ", (self.__jumlahHutang, self.__jumlahSaldo, self.__nomorid,))
         conn.commit()
         conn.close()
 
@@ -166,14 +166,14 @@ class SaldoPelanggan:
             self.__jumlahSaldo = jumlahSaldo
             conn = sqlite3.connect('project.sqlite')
             cursor = conn.cursor()
-            cursor.execute("update SaldoPelanggan set jumlahHutang = 0 ,jumlahUang = ? where noID = ? ", (self.__jumlahSaldo, self.nomorid,))
+            cursor.execute("update SaldoPelanggan set jumlahHutang = 0 ,jumlahUang = ? where noID = ? ", (self.__jumlahSaldo, self.__nomorid,))
             conn.commit()
             conn.close()
 
     def apdetHutang(self):
         conn = sqlite3.connect('project.sqlite')
         cursor = conn.cursor()
-        hasil = cursor.execute("select jumlahHutang from SaldoPelanggan where noID = ?", (str(self.nomorid),)).fetchone()[0]
+        hasil = cursor.execute("select jumlahHutang from SaldoPelanggan where noID = ?", (str(self.__nomorid),)).fetchone()[0]
         conn.close()
         return hasil
 
