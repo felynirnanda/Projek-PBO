@@ -109,10 +109,6 @@ class SaldoPelanggan:
 
     def showSaldo(self):
         print(self.__jumlahSaldo)
-    
-
-    def inputSaldo(self, inputsaldo):
-        self.saldo = inputsaldo
 
     # waktu transaksi pada masing-masing method untuk mengetahui kapan transaksi saat itu dilakukan, pakai datetime database auto sabi
     def saldoTabungan(self):
