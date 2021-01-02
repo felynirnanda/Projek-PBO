@@ -21,7 +21,7 @@ class Pelanggan(Pengguna):
         Pelanggan.jumlahPelanggan += 1
         self.__nomer_id = nomerID
 
-    def showinfo(self):
+    def showInfo(self):
         print("Nama\t\t: {}\nAlamat\t\t: {}\nNomer HP\t: {}".format(self.nama, self.alamat, self.noHP))
 
     def umur(self):
@@ -88,7 +88,7 @@ class Karyawan(Pelanggan):
         super().__init__(noID, nama, alamat, noHP, tahunLahir)
         self.noKtp = noKtp
 
-    def showinfo(self):
+    def showInfo(self):
         print("Nama\t\t: {}\nNomer KTP\t: {}\nAlamat\t\t: {}\nNomer HP\t: {}".format(self.nama, self.noKtp, self.alamat, self.noHP))
 
 class SaldoPelanggan:
