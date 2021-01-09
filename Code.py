@@ -174,6 +174,7 @@ class SaldoPelanggan:
         return hasil
 
 class Menu:
+    # menu utama untuk semua pengguna
     def menuUtama(self):
         while True:
             print("""Selamat Datang^_^
