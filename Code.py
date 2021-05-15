@@ -189,6 +189,7 @@ class Menu:
                 nomorhp = input("masukkan nomor hp anda ")
                 tahunLahir = input("masukkan tahun lahir")
                 conn = sqlite3.connect('project.sqlite')
+                # nanti tambahi username, password dan konfirmasi password
                 cursor = conn.cursor()
                 query = "INSERT INTO Pelanggan(Nama,Alamat,NomorHp, tahunLahir) VALUES (?,?,?,?)"
                 cursor.execute(query, (nama, alamat, nomorhp, tahunLahir))
@@ -200,6 +201,7 @@ class Menu:
             elif pilihan == 2:
                 conn = sqlite3.connect('project.sqlite')
                 cursor = conn.cursor()
+                # nanti tambahin username dan password untuk masuk
                 nama = input("masukkan nama ")
                 hasil = cursor.execute("select * from Pelanggan where Nama = ?", (nama,)).fetchone()
                 conn.close()
